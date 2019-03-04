@@ -1,0 +1,23 @@
+<html>
+<head>
+	<meta charset="UTF-8"> 
+  
+<body>   
+<% include navbar.ejs %>  
+<h1>userpage</h1>
+
+<%if (lala) { %>  
+			<% for(var i=0; i < lala.length; i++) { %> 
+				<div id=<%= lala[i].id %> >
+					<td><%= lala[i].id %></td>
+					<td><%= lala[i].username %></td>   
+					<td><%= lala[i].password %></td>   
+					<a href='/leads/<%= lala[i].id %>'> Details </a> 
+					<a href='/leads/<%= lala[i].id %>/edit'> edit </a> 
+					<a href='/leads/<%= lala[i].id %>/delete'> delete </a>  
+					<br>
+				</div>
+			<% } %> 
+		<% } %>
+  	</body>
+</html>
