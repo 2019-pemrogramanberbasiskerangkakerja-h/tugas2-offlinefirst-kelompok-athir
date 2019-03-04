@@ -1,0 +1,164 @@
+setup
+  https://expressjs.com/en/starter/generator.html
+  mkdir 
+  cmd -> npm install express-generator -g
+  cmd -> express --view=pug myapp
+  $ cd myapp
+  $ npm install
+  set DEBUG=myapp:* & npm start
+
+  check package.json, these below should be installed
+    "dependencies": {
+      "consolidate": "^0.15.1",
+      "cookie-parser": "~1.4.3",
+      "debug": "~2.6.9",
+      "ejs": "^2.6.1",
+      "express": "~4.16.0",
+      "http-errors": "~1.6.2",
+      "morgan": "~1.9.0",
+      "mysql": "^2.16.0",
+      "nodemon": "^1.18.10",
+      "pug": "^2.0.3",
+      "swig": "^1.4.2"
+    }
+  
+  make controller folder, make file landing.js
+    
+  in views
+    make file views/index.html //goin to be first page
+    change anything with ext .pug with .ejs
+
+  put this in app.js
+    var mysql = require('mysql'); 
+
+  in app.js  
+    delete anything refers to "pug view" and change with  
+      
+    // view engine setup//ejs  
+    app.set('views', path.join(__dirname, 'views')); 
+    app.set('view engine', 'ejs'); 
+    app.use(express.static(__dirname + '/public'));//store everything in ma public directory
+  
+create tabel and stuff, all code lays in read only sql syntax.js
+
+in routes/index.js and landing.js   
+    let myController = require('../controller/landing');//use data from controllers/landing
+
+    index.js
+    router.get('/', myController.get );
+      //  this will take data from form in halaman.ejs, detect anything that ready to submit
+      myController.get -> check landing.js
+
+    landing.js 
+    exports.get = function(req, res, next) {  
+      res.render('index', { title: 'Express' });  //use page in index and send data (title to it)  
+    } //index can also signed with / only
+
+      //knowing res.render is refer to index or we can call it as root
+
+    index.js
+    router.post('/', myController.submit_data );
+      this code will automatically take the res.render cerated by landing.js and proceed to submit_data
+    
+    landing.js 
+    exports.submit_data = function(req, res, next) { 
+    res.redirect('/leads');
+      //this code will handle data sent from index.js and redirect url to /leads
+      //leads page is never exist
+      /leads is not page or webpage, its just url call to proceed process in index.js
+      /mycontroller.allshowuser is the page will be handled when /leads called
+      its just url call that will be handled in index.js
+    
+    index.js 
+    router.get('/leads',myController.AllshowUser); 
+      then go to allshowuser
+    
+
+    router.post('/', myController.submit_data );
+
+    note:
+    router.get('/leads',myController.AllshowUser);
+      /leads is not page or webpage, its just url call to proceed process in index.js
+      /mycontroller.allshowuser is the page will be handled when /leads called
+
+
+deal with req.params or req.body
+    in halaman.ejs
+			<a href='/leads/<%= lala[i].id %>'> Details </a> 
+			<a href='/leads/<%= lala[i].id %>/edit'> edit </a> 
+      <a href='/leads/<%= lala[i].id %>/delete'> delete </a><br>
+      
+      if u click one from it, it will automaticaly shared params.id
+
+      we can grab it by using this following
+       takeId = req.params.user_id;   
+        user_id is new variable, u dont need to change lala[i].id into user_id
+        when id shared, req.params with catche anything shared at the present time  
+
+        
+send data to other page 
+  res.sendFile(__dirname + '/public/index.html') //openpage
+  res.render('halaman');// call halaman page
+  res.render('halaman',{cabe1 : req.params.name});// pass data
+  var data = {age:29, job: 'ninja'};
+  res.render('halaman',{cabe1 : "haloo semuaa", passdata :data}); 
+
+
+  tihs to recieve
+  <h1>title = <%= cabe1 %></h1>
+  <p>age : <%= data.age %></p>
+  <p>age : <%= data.job %></p> 
+
+stupid trick
+	works
+		<input type="text", name="RegUsername", value="<%= lala.username %>">  
+
+    not works , karena ada spasi setelah regusername, kalo mau , gaboleh spasi dulu
+    <input type="text", name="RegUsername" ,value="<%= lala.username %>">  
+
+
+
+
+ada 3 cara ngepass sql
+
+  pertama,   data sql disimpen di takeId
+    let sql = 'DELETE FROM register WHERE id = ?';
+    let query = db.query(sql,takeId, (err, result) => 
+     
+  kedua, store banyak data di post terus pake  [post,takeId],
+    let takeId = req.params.user_id;       
+    let post = {username:req.body.RegUsername, password:req.body.RegPassword}; 
+    let sql = 'UPDATE register SET ? WHERE id = ?';
+    let query = db.query(sql,[post,takeId], (err, result) => {
+  
+  ketiga
+    takeId = req.params.user_id;                 
+    let sql = `SELECT * FROM register WHERE id = ${takeId}`;
+    let query = db.query(sql, (err, results) => {
+
+if else
+https://stackoverflow.com/questions/8216918/can-i-use-conditional-statements-with-ejs-templates-in-jmvc
+
+href + value passed, forr loop
+https://stackoverflow.com/questions/10777246/interweave-ejs-and-javascript-variables-inside-tags
+
+load html in html file
+https://stackoverflow.com/questions/8988855/include-another-html-file-in-a-html-file
+
+load ejs in ejs file
+https://www.youtube.com/watch?v=CdvSVkF9m_Y
+
+  just call page
+    file a.ejs
+      <html><% include b.ejs %></html>
+    
+    file b.ejs
+      <html><p>page b</p></html>
+
+  kalo mau send data
+    file a.ejs
+      <%- include("b.ejs",{judul:"your_title"}) %>
+    
+    file b.ejs
+      <h1> <%= judul %>  </h1> 
+      <html><p>page b</p></html>
