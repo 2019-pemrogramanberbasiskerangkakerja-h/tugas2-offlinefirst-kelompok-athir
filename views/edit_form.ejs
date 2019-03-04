@@ -1,0 +1,17 @@
+<html>
+<head>
+  <meta charset="UTF-8"> 
+ 
+<body> 
+	<h1> EDIT FORM <%= lala.id %> </h1> 
+	<form action="/leads/<%= lala.id %>/edit", method="POST">
+		<input type="text", name="RegUsername", value="<%= lala.username %>"> 
+		<input type="text", name="RegPassword", value="<%=lala.password %>"> 
+		<button type="submit">submit button</button>
+	</form>
+  
+ 
+    <p> username =  <%=lala.username %>  </p>   
+    <p> password =  <%=lala.password %>  </p>   
+</body>
+</html>
